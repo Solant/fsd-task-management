@@ -18,6 +18,10 @@ export const useTaskStore = defineStore('task', () => {
     async function createTask(payload: TaskInput) {
       await wait();
 
+      if (tasks.value.find(task => task.title === payload.title && task.projectId === payload.projectId)) {
+        throw new Error('Task already exists', { cause: { title: 'Already exists' } });
+      }
+
       tasks.value.push({
         taskId: v4(),
         ...payload,
