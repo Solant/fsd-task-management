@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useForm } from 'vee-validate';
 import { AlertDialogCancel } from 'reka-ui';
+import { storeToRefs } from 'pinia';
 
 import BaseDialog from '@/shared/ui/BaseDialog.vue';
 import BaseInput from '@/shared/ui/BaseInput.vue';
@@ -15,15 +16,18 @@ const props = defineProps<{ taskId?: string; projectId: string }>();
 const open = ref(false);
 
 const taskStore = useTaskStore();
+const { tasks } = storeToRefs(taskStore);
 
 const form = useForm<TaskInput>({
-  initialValues: {
-    title: '',
-    description: '',
-    priority: 'low',
-    projectId: props.projectId,
-    status: 'pending',
-  },
+  initialValues: props.taskId
+    ? tasks.value.find((task) => task.taskId === props.taskId)
+    : {
+        title: '',
+        description: '',
+        priority: 'low',
+        projectId: props.projectId,
+        status: 'pending',
+      },
 });
 const [title] = form.defineField('title');
 const [description] = form.defineField('description');
@@ -32,7 +36,11 @@ const [status] = form.defineField('status');
 
 const submit = form.handleSubmit(async (payload) => {
   try {
-    await taskStore.createTask(payload);
+    if (props.taskId) {
+      await taskStore.editTask(props.taskId, payload);
+    } else {
+      await taskStore.createTask(payload);
+    }
     form.resetForm();
     open.value = false;
   } catch (e: unknown) {

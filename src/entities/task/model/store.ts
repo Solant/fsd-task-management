@@ -9,10 +9,11 @@ export const useTaskStore = defineStore('task', () => {
     const tasks = ref<Task[]>([]);
 
     async function loadTasks(projectId: string) {
-      await wait();
-      console.log(projectId);
+      if (tasks.value.some(task => task.projectId === projectId)) {
+        return;
+      }
 
-      tasks.value = [];
+      await wait();
     }
 
     async function createTask(payload: TaskInput) {

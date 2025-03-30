@@ -7,6 +7,7 @@ import { useProjectStore } from '@/entities/project';
 import { useTaskList, useTaskStore } from '@/entities/task';
 import BaseSpinner from '@/shared/ui/BaseSpinner.vue';
 import { CreateTaskDialog } from '@/features/task-edit';
+import { EditTaskDialog } from '@/features/task-edit';
 
 const route = useRoute();
 const projectId = computed(() => {
@@ -51,34 +52,40 @@ if (!projects.value.length) {
       <BaseSpinner />
     </div>
     <div v-else class="grid lg:grid-cols-2 gap-5">
-      <div
+      <EditTaskDialog
         v-for="task in tasks"
         :key="task.taskId"
-        class="flex items-center justify-left flex-col p-6 border rounded-lg shadow-sm hover:bg-gray-100 bg-gray-800 border-gray-700 hover:bg-gray-700 relative"
+        :task-id="task.taskId"
+        :project-id="task.projectId"
       >
-        <h5 class="text-2xl font-bold tracking-tight text-white">
-          {{ task.title }}
-        </h5>
-
-        <div class="c-white mt-1">
-          {{ task.description }}
-        </div>
-
         <div
-          :class="{
-            'c-white': task.priority === 'low',
-            'c-yellow-400': task.priority === 'medium',
-            'c-red-400': task.priority === 'high',
-          }"
-          class="capitalize absolute left-2 top-2"
+          class="cursor-pointer flex items-center justify-left flex-col p-6 border rounded-lg shadow-sm hover:bg-gray-100 bg-gray-800 border-gray-700 hover:bg-gray-700 relative"
         >
-          {{ task.priority }}, {{ task.status }}
+          <h5 class="text-2xl font-bold tracking-tight text-white">
+            {{ task.title }}
+          </h5>
+
+          <div class="c-white mt-1">
+            {{ task.description }}
+          </div>
+
+          <div
+            :class="{
+              'c-white': task.priority === 'low',
+              'c-yellow-400': task.priority === 'medium',
+              'c-red-400': task.priority === 'high',
+            }"
+            class="capitalize absolute left-2 top-2"
+          >
+            {{ task.priority }}, {{ task.status }}
+          </div>
         </div>
-      </div>
+      </EditTaskDialog>
 
       <CreateTaskDialog :project-id>
         <a
           href="#"
+          @click.prevent
           class="flex items-center justify-center flex-col p-6 border border-dashed rounded-lg shadow-sm hover:bg-gray-100 bg-gray-800 border-gray-700 hover:bg-gray-700"
         >
           <div class="i-mdi-plus c-white" />
