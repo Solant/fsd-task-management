@@ -38,10 +38,20 @@ export const useTaskStore = defineStore('task', () => {
       }
     }
 
+    async function deleteTask(taskId: Task['taskId']) {
+      await wait();
+      
+      const index = tasks.value.findIndex(task => task.taskId === taskId);
+      if (index !== -1) {
+        tasks.value.splice(index, 1);
+      }
+    }
+
     return {
       tasks: readonly(tasks),
       loadTasks,
       createTask,
       editTask,
+      deleteTask,
     };
 })

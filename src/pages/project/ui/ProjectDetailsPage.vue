@@ -6,9 +6,11 @@ import { useRoute } from 'vue-router';
 import { useProjectStore } from '@/entities/project';
 import { useTaskList, useTaskStore, type TaskFilters } from '@/entities/task';
 import BaseSpinner from '@/shared/ui/BaseSpinner.vue';
+import BaseButton from '@/shared/ui/BaseButton.vue';
 import { CreateTaskDialog } from '@/features/task-edit';
 import { EditTaskDialog } from '@/features/task-edit';
 import { TaskFilter } from '@/widgets/task-filter';
+import { DeleteTaskDialog } from '@/features/task-delete';
 
 const route = useRoute();
 const projectId = computed(() => {
@@ -84,6 +86,12 @@ if (!projects.value.length) {
           >
             {{ task.priority }}, {{ task.status }}
           </div>
+
+          <DeleteTaskDialog :task-id="task.taskId">
+            <BaseButton variant="danger" class="absolute top-0 right-0" @click.prevent.stop>
+              <div class="i-mdi-trash-can-outline" />
+            </BaseButton>
+          </DeleteTaskDialog>
         </div>
       </EditTaskDialog>
 
