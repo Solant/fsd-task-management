@@ -4,17 +4,20 @@ import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useProjectStore } from '@/entities/project';
-import { useTaskList, useTaskStore } from '@/entities/task';
+import { useTaskList, useTaskStore, type TaskFilters } from '@/entities/task';
 import BaseSpinner from '@/shared/ui/BaseSpinner.vue';
 import { CreateTaskDialog } from '@/features/task-edit';
 import { EditTaskDialog } from '@/features/task-edit';
+import { TaskFilter } from '@/widgets/task-filter';
 
 const route = useRoute();
 const projectId = computed(() => {
   const id = route.params.projectId;
   return Array.isArray(id) ? id[0] : id;
 });
-const tasks = useTaskList(projectId);
+
+const filters = ref<TaskFilters>({});
+const tasks = useTaskList(projectId, filters);
 
 const projectStore = useProjectStore();
 const taskStore = useTaskStore();
@@ -47,6 +50,8 @@ if (!projects.value.length) {
     <h1 v-if="currentProject" class="c-white text-4xl font-bold tracking-wide mb-5">
       {{ currentProject.title }}
     </h1>
+
+    <TaskFilter @filter="filters = $event" class="my-10" />
 
     <div v-if="loading" class="flex justify-center">
       <BaseSpinner />

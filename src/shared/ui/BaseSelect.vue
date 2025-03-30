@@ -12,7 +12,7 @@ import {
   SelectViewport,
 } from 'reka-ui';
 
-const model = defineModel<string>({ required: true });
+const model = defineModel<string>({ required: false });
 
 defineProps<{
   options: string[];
@@ -23,6 +23,7 @@ defineProps<{
 <template>
   <SelectRoot v-model="model">
     <SelectTrigger
+      v-bind="$attrs"
       class="inline-flex min-w-[160px] items-center justify-between rounded-lg p-2.5 leading-none gap-[5px] bg-gray-600 c-white border border-gray-500 outline-none"
       aria-label="Customise options"
     >
