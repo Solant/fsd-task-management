@@ -4,7 +4,7 @@ import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useProjectStore } from '@/entities/project';
-import { useTaskStore } from '@/entities/task';
+import { useTaskList, useTaskStore } from '@/entities/task';
 import BaseSpinner from '@/shared/ui/BaseSpinner.vue';
 
 const route = useRoute();
@@ -12,6 +12,7 @@ const projectId = computed(() => {
   const id = route.params.projectId;
   return Array.isArray(id) ? id[0] : id;
 });
+const tasks = useTaskList(projectId);
 
 const projectStore = useProjectStore();
 const taskStore = useTaskStore();
@@ -48,6 +49,23 @@ if (!projects.value.length) {
     <div v-if="loading" class="flex justify-center">
       <BaseSpinner />
     </div>
-    <div v-else>list</div>
+    <div v-else class="grid lg:grid-cols-2 gap-5">
+      <div
+        v-for="task in tasks"
+        :key="task.taskId"
+        class="flex items-center justify-center flex-col p-6 border rounded-lg shadow-sm hover:bg-gray-100 bg-gray-800 border-gray-700 hover:bg-gray-700 relative"
+      >
+        <h5 class="text-2xl font-bold tracking-tight text-white">
+          {{ task.title }}
+        </h5>
+      </div>
+
+      <a
+        href="#"
+        class="flex items-center justify-center flex-col p-6 border border-dashed rounded-lg shadow-sm hover:bg-gray-100 bg-gray-800 border-gray-700 hover:bg-gray-700"
+      >
+        <div class="i-mdi-plus c-white" />
+      </a>
+    </div>
   </div>
 </template>
