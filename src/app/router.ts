@@ -15,6 +15,6 @@ export const router = createRouter({
       path: '/project/:projectId',
       name: 'project-details',
       component: ProjectDetailsPage,
-    }
+    },
   ],
 });
